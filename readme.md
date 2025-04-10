@@ -1,4 +1,4 @@
-# Travel Globe
+# 🌍 Travel Globe
 
 An interactive 3D globe that allows users to explore different countries around the world. Built with Three.js and modern web technologies.
 
