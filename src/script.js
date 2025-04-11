@@ -67,14 +67,11 @@ function initObjects(){
     const progressBar = document.querySelector('.progress-bar');
     const loadingText = document.querySelector('.loading-text');
     
-    // Animation function for smooth progress updates
     function animateProgress() {
         if (currentProgress < targetProgress) {
-            // Calculate a smaller increment for smoother animation
             const increment = Math.max(0.5, (targetProgress - currentProgress) * 0.05);
             currentProgress = Math.min(currentProgress + increment, targetProgress);
             
-            // Update both the progress bar and text with the same value
             const displayProgress = Math.floor(currentProgress);
             progressBar.style.width = `${currentProgress}%`;
             loadingText.textContent = `Loading Globe... ${displayProgress}%`;
@@ -94,22 +91,17 @@ function initObjects(){
     };
     
     loadingManager.onLoad = function() {
-        // Ensure progress reaches 100% before hiding
         targetProgress = 100;
         
-        // Use requestAnimationFrame for smoother final animation
         function finalProgress() {
             if (currentProgress >= 100) {
-                // Add a small delay before hiding for better UX
                 setTimeout(() => {
                     document.getElementById('loading-overlay').classList.add('hidden');
                 }, 500);
             } else {
-                // Use a consistent increment for the final animation
                 const increment = Math.max(0.5, (100 - currentProgress) * 0.05);
                 currentProgress = Math.min(currentProgress + increment, 100);
                 
-                // Update both the progress bar and text with the same value
                 const displayProgress = Math.floor(currentProgress);
                 progressBar.style.width = `${currentProgress}%`;
                 loadingText.textContent = `Loading Globe... ${displayProgress}%`;
@@ -204,9 +196,11 @@ function onMouseDown(){
     }
     resetRadius();
     hideCountryCard();
-    
-    // Hide the drag hint after first interaction
-    hideDragHint();
+
+    const rotationIconContainer = document.getElementById('rotation-icon-container');
+    if (rotationIconContainer && !rotationIconContainer.classList.contains('hidden')) {
+        rotationIconContainer.classList.add('hidden');
+    }
 }
 
 function animateToPosition(
@@ -266,12 +260,7 @@ function hideCountryCard() {
     countryCard.classList.remove("visible");
 }
 
-function hideDragHint() {
-    const dragHint = document.getElementById("drag-hint");
-    if (dragHint) {
-        dragHint.classList.remove("visible");
-    }
-}
+
 
 function resetRadius(targetRadius = 10, duration = 1.5) {
     sphericalCameraPosition.setFromVector3(camera.position);
@@ -303,31 +292,43 @@ document.getElementById("closeButton").addEventListener("click", function(event)
     resetRadius();
 });
 
+const cornerIcon = document.getElementById("corner-icon");
+
+['mousedown', 'mouseup', 'click', 'dblclick', 'mousemove', 'mouseenter', 'mouseleave'].forEach(eventType => {
+    cornerIcon.addEventListener(eventType, function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        if (eventType === 'mouseenter' && controls) {
+            controls.enabled = false;
+        }
+        
+        if (eventType === 'mouseleave' && controls) {
+            controls.enabled = true;
+        }
+        
+        if (eventType === 'click') {
+            toggleFullScreen();
+        }
+    }, true);
+});
+
 function onWindowResize() {
-    // Update sizes
     width = window.innerWidth;
     height = window.innerHeight;
 
-    // Update camera
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
 
-    // Update renderer
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 }
 
-/**
- * Preloads all country card images to ensure they're cached
- * This prevents positioning issues when displaying the first country card
- */
 function preloadCountryImages() {
-    // Create a hidden div to hold preloaded images
     const preloadDiv = document.createElement('div');
     preloadDiv.style.display = 'none';
     document.body.appendChild(preloadDiv);
     
-    // Preload each country image
     countries.forEach(country => {
         const img = new Image();
         img.src = country.cardurl;
@@ -335,5 +336,85 @@ function preloadCountryImages() {
     });
 }
 
-setup();
-animate();
+function toggleFullScreen() {
+    if (!document.fullscreenElement && 
+        !document.mozFullScreenElement && 
+        !document.webkitFullscreenElement && 
+        !document.msFullscreenElement) {
+        cornerIcon.classList.add('fullscreen');
+        
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) {
+            document.documentElement.msRequestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) {
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+    } else {
+        cornerIcon.classList.remove('fullscreen');
+        
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+}
+
+function checkDevice() {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+        const mobileMessage = document.createElement('div');
+        mobileMessage.style.position = 'fixed';
+        mobileMessage.style.top = '0';
+        mobileMessage.style.left = '0';
+        mobileMessage.style.width = '100%';
+        mobileMessage.style.height = '100%';
+        mobileMessage.style.backgroundColor = 'black';
+        mobileMessage.style.color = 'white';
+        mobileMessage.style.display = 'flex';
+        mobileMessage.style.justifyContent = 'center';
+        mobileMessage.style.alignItems = 'center';
+        mobileMessage.style.zIndex = '2000';
+        mobileMessage.style.boxSizing = 'border-box';
+        mobileMessage.style.padding = '20px 0';
+        
+        mobileMessage.innerHTML = `
+            <div style="width: 90%; max-width: 500px; text-align: center; padding: 0 15px; box-sizing: border-box;">
+                <h2 style="font-size: 24px; margin-bottom: 20px; font-family: Arial, sans-serif;">Desktop Experience Recommended</h2>
+                <p style="font-size: 16px; line-height: 1.5; font-family: Arial, sans-serif;">This 3D globe experience works best on desktop devices. Please visit on a laptop or desktop computer for the full experience.</p>
+            </div>
+        `;
+        
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+        }
+        
+        document.body.appendChild(mobileMessage);
+        
+        return false;
+    }
+    return true;
+}
+
+if (checkDevice()) {
+    setup();
+
+    if (canvas) {
+        canvas.addEventListener('mousedown', function(e) {
+            if (e.target === cornerIcon || cornerIcon.contains(e.target)) {
+                e.stopPropagation();
+                return false;
+            }
+        }, true);
+    }
+
+    animate();
+}

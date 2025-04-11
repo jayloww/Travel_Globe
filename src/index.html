@@ -7,43 +7,26 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <div id="corner-icon">
+        <div class="corner top-left"></div>
+        <div class="corner top-right"></div>
+        <div class="corner bottom-left"></div>
+        <div class="corner bottom-right"></div>
+    </div>
     <div id="loading-overlay">
         <div class="progress-container">
             <div class="progress-bar"></div>
         </div>
         <div class="loading-text">Loading Globe...</div>
     </div>
-    <div id="drag-hint" class="visible">
-        <div class="hint-text">
-            <div class="hint-icon">
-                <svg width="32" height="32" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Center point where all arrows connect -->
-                    <circle cx="14" cy="14" r="1" fill="currentColor"/>
-                    
-                    <!-- Top-right arrow (45°) -->
-                    <path d="M14 14L20 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M17 8L20 8L20 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    
-                    <!-- Bottom-right arrow (135°) -->
-                    <path d="M14 14L20 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M20 17L20 20L17 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    
-                    <!-- Bottom-left arrow (225°) -->
-                    <path d="M14 14L8 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M11 20L8 20L8 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    
-                    <!-- Top-left arrow (315°) -->
-                    <path d="M14 14L8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M8 11L8 8L11 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <span>Spin the world with your cursor</span>
-        </div>
-    </div>
     <div id="countryCard">
         <img id="countryImage" src="static/CountryCards/Australia.png" alt="Country Image" />
         <button id="countryButton" class="invisible-button"></button>
         <button id="closeButton" class="close-button"></button>
+    </div>
+    <div id="rotation-icon-container">
+        <img id="rotation-icon" src="/RotationIcon.png" alt="Rotation Icon" />
+        <div id="rotation-text">Click and Drag to explore the World</div>
     </div>
     <canvas class="webgl"></canvas>
     <script type="module" src="./script.js"></script>
