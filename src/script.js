@@ -39,6 +39,7 @@ function setup() {
     controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
+    controls.rotateSpeed = 0.5;
     controls.enableZoom = false;
 
     window.addEventListener("mousedown", onMouseDown);
