@@ -2,6 +2,7 @@
 
 An interactive 3D globe that allows users to explore different countries around the world. Built with Three.js and modern web technologies.
 
+[![Try it live](https://img.shields.io/badge/Try%20it%20Live-Travel%20Globe-blue?style=for-the-badge)](https://travel-globe-ecru.vercel.app/)
 ## Features
 
 - Interactive 3D globe visualization
