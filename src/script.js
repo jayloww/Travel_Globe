@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { MOUSE } from "three";
 import { gsap } from "gsap";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { getFresnelMat } from "./getGlow.js";
@@ -41,6 +42,7 @@ function setup() {
     controls.dampingFactor = 0.25;
     controls.rotateSpeed = 0.5;
     controls.enableZoom = false;
+    controls.mouseButtons.RIGHT = MOUSE.ROTATE;
 
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mouseup", onMouseUp);
